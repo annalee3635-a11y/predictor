@@ -1,9 +1,10 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
+import plotly.graph_objs as go
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import LSTM, Dense, Dropout
 
 # Fetch historical stock data for Tesla
 stock_data = yf.download('TSLA', start='2016-10-01', end='2025-08-01')
@@ -56,3 +57,27 @@ model.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train the model
 model.fit(x_train, y_train, epochs=20, batch_size=32)
+
+# Predict stock prices on the test data
+predictions = model.predict(x_test)
+
+# Inverse transform the predictions back to original price scale
+predictions = scaler.inverse_transform(predictions)
+
+# Inverse transform the actual test data
+y_test_scaled = scaler.inverse_transform(y_test.reshape(-1, 1))
+
+# Create a plotly figure
+fig = go.Figure()
+
+# Add trace for actual prices
+fig.add_trace(go.Scatter(x=stock_data.index[-len(y_test):], y=y_test_scaled.flatten(), mode='lines', name='Actual Price'))
+
+# Add trace for predicted prices
+fig.add_trace(go.Scatter(x=stock_data.index[-len(y_test):], y=predictions.flatten(), mode='lines', name='Predicted Price'))
+
+# Add titles and labels
+fig.update_layout(title='Tesla Stock Price Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
+
+# Show the figure
+fig.show()
