@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import LSTM, Dense, Dropout
+from keras.models import Sequential
+from keras.layers import LSTM, Dense, Dropout
 
 # Fetch historical stock data for Tesla
 stock_data = yf.download('TSLA', start='2016-10-01', end='2025-08-01')
@@ -46,7 +46,7 @@ model = Sequential()
 model.add(LSTM(units=100, return_sequences=True, input_shape=(x_train.shape[1], 1)))
 model.add(Dropout(0.2))
 
-model.add(LSTM(units=100, return_sequences=False))
+model.add(LSTM(units=100))
 model.add(Dropout(0.2))
 
 # Add output layer
