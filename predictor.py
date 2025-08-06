@@ -78,11 +78,10 @@ x_pred = np.reshape(x_pred, (x_pred.shape[0], x_pred.shape[1], 1))
 predicted_prices_scaled = model.predict(x_pred)
 predicted_prices = scaler.inverse_transform(predicted_prices_scaled)
 
-print(predicted_prices)
-print(len(future_dates))
-print(len(predicted_prices.flatten()))
 future_data = pd.DataFrame({'Date': future_dates, 'Predicted Price': predicted_prices.flatten()})
-print(future_data)
+fig2 = go.Figure()
+fig2.add_trace(go.Scatter(x=future_dates[-len(y_test):], y=predicted_prices.flatten(), mode='lines', name='prediction'))
+fig2.show()
 """
 # Create a plotly figure
 fig = go.Figure()
