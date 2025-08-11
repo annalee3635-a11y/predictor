@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
@@ -80,25 +81,34 @@ def predict(code):
     predicted_prices = scaler.inverse_transform(predicted_prices_scaled)
 
     
-
+    name = yf.Ticker(code).info.get('shortName', 'N/A')
     # Create plotly figures
+    fig = make_subplots(
+        rows=1, cols=2,
+        shared_yaxes=True,
+        subplot_titles=(name + " Stock Price Past Prediction", name + " Stock Price Past Prediction")
+    )
+
     past = go.Figure()
     future = go.Figure()
 
     # Add trace for actual prices
-    past.add_trace(go.Scatter(x=stock_data.index[-len(y_test):], y=y_test_scaled.flatten(), mode='lines', name='Actual Price'))
+    fig.add_trace(go.Scatter(x=stock_data.index[-len(y_test):], y=y_test_scaled.flatten(), mode='lines', name='Actual Price'), row=1, col=1)
 
     # Add trace for predicted prices
-    past.add_trace(go.Scatter(x=stock_data.index[-len(y_test):], y=predictions.flatten(), mode='lines', name='Predicted Price'))
-    future.add_trace(go.Scatter(x=future_dates[-len(y_test):], y=predicted_prices.flatten(), mode='lines', name='prediction'))
+    fig.add_trace(go.Scatter(x=stock_data.index[-len(y_test):], y=predictions.flatten(), mode='lines', name='Predicted Price'), row=1, col=1)
+    fig.add_trace(go.Scatter(x=future_dates[-len(y_test):], y=predicted_prices.flatten(), mode='lines', name='prediction'), row=1, col=2)
 
     # Add titles and labels
-    name = yf.Ticker(code).info.get('shortName', 'N/A')
-    past.update_layout(title= name + ' Stock Price Past Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
-    future.update_layout(title= name + ' Stock Price Future Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
+    #name = yf.Ticker(code).info.get('shortName', 'N/A')
+    #fig.update_layout(title= name + ' Stock Price Past Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
+    #fig.update_layout(title= name + ' Stock Price Future Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
+    fig.update_yaxes(title_text="Stock Price (USD)", row=1, col=1)
+    fig.update_yaxes(title_text="Stock Price (USD)", row=1, col=2)
+    fig.update_xaxes(title_text="Date", row=1, col=1)
+    fig.update_xaxes(title_text="Date", row=1, col=2)
 
     # Show the figure
-    past.show()
-    future.show()
+    fig.show()
 
 predict('A')
