@@ -104,7 +104,6 @@ def predict(code):
     #fig.update_layout(title= name + ' Stock Price Past Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
     #fig.update_layout(title= name + ' Stock Price Future Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
     fig.update_yaxes(title_text="Stock Price (USD)", row=1, col=1)
-    fig.update_yaxes(title_text="Stock Price (USD)", row=1, col=2)
     fig.update_xaxes(title_text="Date", row=1, col=1)
     fig.update_xaxes(title_text="Date", row=1, col=2)
 
