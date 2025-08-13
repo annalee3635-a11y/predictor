@@ -109,5 +109,3 @@ def predict(code):
 
     # Show the figure
     fig.show()
-
-predict('A')
