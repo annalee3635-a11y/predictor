@@ -12,10 +12,10 @@ def home():
               </p>"""
 
 
-@app.route("/api/predictor", methods=["GET"])
+@app.route("/predictor", methods=["GET"])
 def predict():
     
-    # check if letters were provided. if so, assign it to variable
+    # check if ticker provided (eg /predictor?ticker=AAPL). if so, assign it to variable
     # if not, display an error
 
     if 'ticker' in request.args:
@@ -23,9 +23,12 @@ def predict():
     else:
         return "Error: No ticker provided. Please provide stock ticker (eg. AAPL)."
     
+    print("Ticker provided, loading prediction...")
+
     predictor.predict(ticker)
 
     return "Your data will open in a new window"
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    #app.run(host='0.0.0.0')
+    app.run()
