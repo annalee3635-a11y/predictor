@@ -1,4 +1,7 @@
+import base64
+from io import BytesIO
 from flask import Flask, request, jsonify
+from matplotlib.figure import Figure
 import predictor
 
 app = Flask(__name__)
@@ -25,9 +28,22 @@ def predict():
     
     print("Ticker provided, loading prediction...")
 
-    predictor.predict(ticker)
+    results = predictor.predict(ticker)
 
-    return "Your data will open in a new window"
+    fig = Figure()
+    past, future = fig.subplots(1, 2, sharey=True)
+
+    past.plot(results[0], results[1])
+    past.plot(results[0], results[2])
+
+    future.plot(results[3], results[4])
+    
+    # Save it to a temporary buffer.
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    # Embed the result in the html output.
+    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    return f"<img src='data:image/png;base64,{data}'/>"
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0')
