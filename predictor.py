@@ -81,7 +81,7 @@ def predict(code):
     predicted_prices_scaled = model.predict(x_pred)
     predicted_prices = scaler.inverse_transform(predicted_prices_scaled)
 
-    
+
     name = yf.Ticker(code).info.get('shortName', 'N/A')
     # Create plotly figures
     fig = Figure()
@@ -91,6 +91,8 @@ def predict(code):
     past.plot(stock_data.index[-len(y_test):], predictions.flatten())
 
     future.plot(future_dates[-seq_length:], predicted_prices.flatten())
+
+    return([stock_data.index[-len(y_test):], y_test_scaled.flatten(), predictions.flatten(), future_dates[-seq_length:], predicted_prices.flatten()])
 
     # Add trace for actual prices
     #past.plot((x=stock_data.index[-len(y_test):], y=y_test_scaled.flatten(), mode='lines', name='Actual Price'), row=1, col=1)
