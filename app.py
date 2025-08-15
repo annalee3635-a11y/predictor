@@ -1,8 +1,9 @@
 import base64
 from io import BytesIO
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from matplotlib.figure import Figure
 import predictor
+from markupsafe import escape
 
 app = Flask(__name__)
 app.config["DEBUG"] = False
@@ -15,34 +16,35 @@ def home():
               </p>"""
 
 
-@app.route("/predictor", methods=["GET"])
+@app.route("/predictor", methods=["GET", "POST"])
 def predict():
     
     # check if ticker provided (eg /predictor?ticker=AAPL). if so, assign it to variable
     # if not, display an error
 
-    if 'ticker' in request.args:
-        ticker = request.args['ticker']
-    else:
-        return "Error: No ticker provided. Please provide stock ticker (eg. AAPL)."
+    #if 'ticker' in request.args:
+        #ticker = request.args['ticker']
+    #else:
+        #return "Error: No ticker provided. Please provide stock ticker (eg. AAPL)."
 
-    results = predictor.predict(ticker)
-
-    #make the plots as subplots of a figure
-    fig = Figure()
-    past, future = fig.subplots(1, 2, sharey=True)
-
-    past.plot(results[0], results[1])
-    past.plot(results[0], results[2])
-
-    future.plot(results[3], results[4])
+    if request.method == "POST":
+       # getting input with name = fname in HTML form
+       ticker = escape(request.form.get("tckr"))
+       results = predictor.predict(ticker)
+       #make the plots as subplots of a figure
+       fig = Figure()
+       past, future = fig.subplots(1, 2, sharey=True)
+       past.plot(results[0], results[1])
+       past.plot(results[0], results[2])
+       future.plot(results[3], results[4])
+       # Save it to a temporary buffer
+       buf = BytesIO()
+       fig.savefig(buf, format="png")
+       # Embed the result in the html output.
+       data = base64.b64encode(buf.getbuffer()).decode("ascii")
+       return f"<img src='data:image/png;base64,{data}'/>"
     
-    # Save it to a temporary buffer.
-    buf = BytesIO()
-    fig.savefig(buf, format="png")
-    # Embed the result in the html output.
-    data = base64.b64encode(buf.getbuffer()).decode("ascii")
-    return f"<img src='data:image/png;base64,{data}'/>"
+    return render_template("getTicker.html")
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0')
