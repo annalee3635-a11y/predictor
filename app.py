@@ -1,6 +1,6 @@
 import base64
 from io import BytesIO
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, redirect, render_template, request, jsonify, url_for
 from matplotlib.figure import Figure
 import predictor
 from markupsafe import escape
@@ -15,6 +15,22 @@ def home():
               <p>This site predicts stock prices using an LSTM deep-learning model.
               </p>"""
 
+@app.route("/predictor/<tckr>", methods=["GET", "POST"])
+def display(tckr): 
+    ticker = escape(tckr)
+    results = predictor.predict(ticker)
+    #make the plots as subplots of a figure
+    fig = Figure()
+    past, future = fig.subplots(1, 2, sharey=True)
+    past.plot(results[0], results[1])
+    past.plot(results[0], results[2])
+    future.plot(results[3], results[4])
+    # Save it to a temporary buffer
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    # Embed the result in the html output.
+    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    return f"<img src='data:image/png;base64,{data}'/>"
 
 @app.route("/predictor", methods=["GET", "POST"])
 def predict():
@@ -30,6 +46,8 @@ def predict():
     if request.method == "POST":
        # getting input with name = fname in HTML form
        ticker = escape(request.form.get("tckr"))
+
+       return redirect(url_for('display', tckr = ticker))
        results = predictor.predict(ticker)
        #make the plots as subplots of a figure
        fig = Figure()
@@ -45,6 +63,7 @@ def predict():
        return f"<img src='data:image/png;base64,{data}'/>"
     
     return render_template("getTicker.html")
+
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0')
