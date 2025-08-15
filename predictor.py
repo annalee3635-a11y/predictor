@@ -81,33 +81,7 @@ def predict(code):
     predicted_prices_scaled = model.predict(x_pred)
     predicted_prices = scaler.inverse_transform(predicted_prices_scaled)
 
-
-    name = yf.Ticker(code).info.get('shortName', 'N/A')
-    # Create plotly figures
-    fig = Figure()
-    past, future = fig.subplots(1, 2, sharey=True)
-
-    past.plot(stock_data.index[-len(y_test):], y_test_scaled.flatten())
-    past.plot(stock_data.index[-len(y_test):], predictions.flatten())
-
-    future.plot(future_dates[-seq_length:], predicted_prices.flatten())
-
-    return([stock_data.index[-len(y_test):], y_test_scaled.flatten(), predictions.flatten(), future_dates[-seq_length:], predicted_prices.flatten()])
-
-    # Add trace for actual prices
-    #past.plot((x=stock_data.index[-len(y_test):], y=y_test_scaled.flatten(), mode='lines', name='Actual Price'), row=1, col=1)
-    
-    # Add trace for predicted prices
-    #fig.add_trace(Figure.Scatter(x=stock_data.index[-len(y_test):], y=predictions.flatten(), mode='lines', name='Predicted Price'), row=1, col=1)
-    #fig.add_trace(Figure.Scatter(x=future_dates[-len(y_test):], y=predicted_prices.flatten(), mode='lines', name='prediction'), row=1, col=2)
-
-    # Add titles and labels
     #name = yf.Ticker(code).info.get('shortName', 'N/A')
-    #fig.update_layout(title= name + ' Stock Price Past Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
-    #fig.update_layout(title= name + ' Stock Price Future Prediction', xaxis_title='Date', yaxis_title='Stock Price (USD)')
-    #fig.update_yaxes(title_text="Stock Price (USD)", row=1, col=1)
-    #fig.update_xaxes(title_text="Date", row=1, col=1)
-    #fig.update_xaxes(title_text="Date", row=1, col=2)
 
-    # Show the figure
-    #fig.show()
+    #return the models so the plots can be made in the app
+    return([stock_data.index[-len(y_test):], y_test_scaled.flatten(), predictions.flatten(), future_dates[-seq_length:], predicted_prices.flatten()])

@@ -25,11 +25,10 @@ def predict():
         ticker = request.args['ticker']
     else:
         return "Error: No ticker provided. Please provide stock ticker (eg. AAPL)."
-    
-    print("Ticker provided, loading prediction...")
 
     results = predictor.predict(ticker)
 
+    #make the plots as subplots of a figure
     fig = Figure()
     past, future = fig.subplots(1, 2, sharey=True)
 
