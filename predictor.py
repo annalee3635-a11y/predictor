@@ -21,8 +21,10 @@ def display(tckr):
     buf = BytesIO()
     fig.savefig(buf, format="png")
     # Embed the result in the html output.
-    data = base64.b64encode(buf.getbuffer()).decode("ascii")
-    return render_template("predictionGraphs.html", **data)
+    data_for_passing = {
+        'data' : base64.b64encode(buf.getbuffer()).decode("ascii")
+    }
+    return render_template("predictionGraphs.html", **data_for_passing)
 
 @bp.route("/", methods=["GET", "POST"])
 def pred():
