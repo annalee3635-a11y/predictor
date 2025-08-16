@@ -27,7 +27,7 @@ def create_app(test_config=None):
         pass
 
     # register the database commands
-    #from . import db
+    #from predicter import db
 
     #db.init_app(app)
 
