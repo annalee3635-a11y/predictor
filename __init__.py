@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 
 
 def create_app(test_config=None):
@@ -10,7 +10,7 @@ def create_app(test_config=None):
         # a default secret that should be overridden by instance config
         SECRET_KEY="dev",
         # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
+        DATABASE=os.path.join(app.instance_path, "stockPredictor.sqlite"),
     )
 
     if test_config is None:
@@ -27,21 +27,20 @@ def create_app(test_config=None):
         pass
 
     # register the database commands
-    #from predicter import db
+    from predicter import db
 
-    #db.init_app(app)
+    db.init_app(app)
 
     # apply the blueprints to the app
     from predicter import predictor
+    from predicter import auth
 
     app.register_blueprint(predictor.bp)
+    app.register_blueprint(auth.bp)
 
     @app.route('/', methods=['GET'])
     def home():
-        return """<h1>Stock Predictor</h1>
-              <p>This site predicts stock prices using an LSTM deep-learning model.
-              </p>"""
-
+        return render_template('index.html')
     # make url_for('index') == url_for('blog.index')
     # in another app, you might define a separate main index here with
     # app.route, while giving the blog blueprint a url_prefix, but for

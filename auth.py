@@ -11,7 +11,7 @@ from flask import url_for
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from .db import get_db
+from predicter.db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -79,3 +79,37 @@ def register():
         flash(error)
 
     return render_template("auth/register.html")
+
+@bp.route("/login", methods=("GET", "POST"))
+def login():
+    """Log in a registered user by adding the user id to the session."""
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        db = get_db()
+        error = None
+        user = db.execute(
+            "SELECT * FROM user WHERE username = ?", (username,)
+        ).fetchone()
+
+        if user is None:
+            error = "Incorrect username."
+        elif not check_password_hash(user["password"], password):
+            error = "Incorrect password."
+
+        if error is None:
+            # store the user id in a new session and return to the index
+            session.clear()
+            session["user_id"] = user["id"]
+            return redirect(url_for("index"))
+
+        flash(error)
+
+    return render_template("auth/login.html")
+
+
+@bp.route("/logout")
+def logout():
+    """Clear the current session, including the stored user id."""
+    session.clear()
+    return redirect(url_for("index"))
