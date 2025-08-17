@@ -9,7 +9,9 @@ bp = Blueprint("predictor", __name__, url_prefix="/predictor")
 
 @bp.route("/<tckr>", methods=["GET", "POST"])
 def display(tckr): 
+    #escaping for safety
     ticker = escape(tckr)
+    #get the prediction
     results = lstm.predict(ticker)
     #make the plots as subplots of a figure
     fig = Figure()
@@ -29,7 +31,7 @@ def display(tckr):
 @bp.route("/", methods=["GET", "POST"])
 def pred():
     if request.method == "POST":
-       # getting input with name = fname in HTML form
+       # getting input in HTML form
        ticker = escape(request.form.get("tckr"))
 
        return redirect(url_for('predictor.display', tckr = ticker))
