@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-<form action="{{ url_for('predictor.pred')}}" method="post">
-<label for="ticker">Enter Stock Ticker (eg AAPL):</label>
-<input type="text" id="ticker" name="tckr" placeholder="ticker">
-<button type="submit">Predict</button>
+{% block content %}
+    <form action="{{ url_for('predictor.pred')}}" method="post">
+    <label for="ticker">Enter Stock Ticker (eg AAPL):</label>
+    <input type="text" id="ticker" name="tckr" placeholder="ticker">
+    <button type="submit">Predict</button>
+{% endblock %}
