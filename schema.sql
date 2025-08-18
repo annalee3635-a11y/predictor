@@ -15,5 +15,6 @@ CREATE TABLE post (
   author_id INTEGER NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ticker TEXT NOT NULL,
+  model_data BLOB,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );

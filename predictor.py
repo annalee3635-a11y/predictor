@@ -1,9 +1,11 @@
 import base64
 from io import BytesIO
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, session, url_for
 from markupsafe import escape
 from matplotlib.figure import Figure
 import lstm
+from predicter.db import get_db
+from flask import g
 
 bp = Blueprint("predictor", __name__, url_prefix="/predictor")
 
@@ -12,7 +14,9 @@ def display(tckr):
     #escaping for safety
     ticker = escape(tckr)
     #get the prediction
-    results = lstm.predict(ticker)
+    user_id = session.get("user_id")
+    if user_id is None:
+        results = lstm.predict(ticker)
     #make the plots as subplots of a figure
     fig = Figure()
     past, future = fig.subplots(1, 2, sharey=True)
