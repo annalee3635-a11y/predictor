@@ -16,20 +16,32 @@ def display(tckr):
     #get the prediction
     db = get_db()
     user_id = session.get("user_id")
-    results = lstm.predict(ticker)
-    #make the plots as subplots of a figure
-    fig = Figure()
-    past, future = fig.subplots(1, 2, sharey=True)
-    past.plot(results[0], results[1])
-    past.plot(results[0], results[2])
-    future.plot(results[3], results[4])
-    # Save it to a temporary buffer
-    buf = BytesIO()
-    fig.savefig(buf, format="png")
-    # Embed the result in the html output.
-    data_for_passing = {
-        'data' : base64.b64encode(buf.getbuffer()).decode("ascii")
-    }
+    existed = False
+    if user_id is not None:
+        data_for_passing = db.execute("SELECT figure FROM stocks WHERE author_id = ? AND ticker = ?" (user_id, ticker))
+        existed = True
+    if user_id is None or data_for_passing is None:
+        results = lstm.predict(ticker)
+        #make the plots as subplots of a figure
+        fig = Figure()
+        past, future = fig.subplots(1, 2, sharey=True)
+        past.plot(results[0], results[1])
+        past.plot(results[0], results[2])
+        future.plot(results[3], results[4])
+        # Save it to a temporary buffer
+        buf = BytesIO()
+        fig.savefig(buf, format="png")
+        # Embed the result in the html output.
+        data_for_passing = {
+            'data' : base64.b64encode(buf.getbuffer()).decode("ascii")
+        }
+    if user_id is not None and existed == False:
+        db.execute(
+            "INSERT INTO stocks (author_id, ticker, figure) VALUES (?, ?, ?)",
+            (user_id, ticker, data_for_passing),
+        )
+        db.commit()
+    
     return render_template("predictionGraphs.html", **data_for_passing)
 
 @bp.route("/", methods=["GET", "POST"])

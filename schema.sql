@@ -2,7 +2,7 @@
 -- Drop any existing data and create empty tables.
 
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS stocks;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
