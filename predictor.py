@@ -16,11 +16,11 @@ def display(tckr):
     #get the prediction
     db = get_db()
     user_id = session.get("user_id")
-    existed = False
+    existed = True
     if user_id is not None:
         data_for_passing = db.execute("SELECT figure FROM stocks WHERE author_id = ? AND ticker = ?" (user_id, ticker))
-        existed = True
     if user_id is None or data_for_passing is None:
+        existed = False
         results = lstm.predict(ticker)
         #make the plots as subplots of a figure
         fig = Figure()
