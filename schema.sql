@@ -10,11 +10,12 @@ CREATE TABLE user (
   password TEXT NOT NULL
 );
 
-CREATE TABLE post (
+CREATE TABLE stocks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   author_id INTEGER NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ticker TEXT NOT NULL,
-  model_data BLOB,
+  past BLOB,
+  future BLOB,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );

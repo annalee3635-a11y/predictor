@@ -14,9 +14,9 @@ def display(tckr):
     #escaping for safety
     ticker = escape(tckr)
     #get the prediction
+    db = get_db()
     user_id = session.get("user_id")
-    if user_id is None:
-        results = lstm.predict(ticker)
+    results = lstm.predict(ticker)
     #make the plots as subplots of a figure
     fig = Figure()
     past, future = fig.subplots(1, 2, sharey=True)
