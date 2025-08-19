@@ -15,7 +15,6 @@ CREATE TABLE stocks (
   author_id INTEGER NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ticker TEXT NOT NULL,
-  past BLOB,
-  future BLOB,
+  figure BLOB
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
