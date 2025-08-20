@@ -3,7 +3,7 @@ from io import BytesIO
 from flask import Blueprint, redirect, render_template, request, session, url_for
 from markupsafe import escape
 from matplotlib.figure import Figure
-import lstm
+from predicter import lstm
 from predicter.db import get_db
 from flask import g
 
@@ -18,8 +18,10 @@ def display(tckr):
     user_id = session.get("user_id")
     existed = True
     if user_id is not None:
-        data_for_passing = db.execute("SELECT figure FROM stocks WHERE author_id = ? AND ticker = ?" (user_id, ticker))
-    if user_id is None or data_for_passing is None:
+        data_for_passing = db.execute("SELECT figure FROM stocks WHERE (author_id = ? AND ticker = ?)", (user_id, ticker))
+        print("test")
+        print(data_for_passing)
+    if user_id is None or not isinstance(data_for_passing, str):
         existed = False
         results = lstm.predict(ticker)
         #make the plots as subplots of a figure
