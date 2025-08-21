@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, render_template
+from predicter import db
 
 
 def create_app(test_config=None):
@@ -27,7 +28,7 @@ def create_app(test_config=None):
         pass
 
     # register the database commands
-    from predicter import db
+
 
     db.init_app(app)
 

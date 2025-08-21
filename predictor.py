@@ -18,10 +18,8 @@ def display(tckr):
     user_id = session.get("user_id")
     existed = True
     if user_id is not None:
-        data_for_passing = db.execute("SELECT figure FROM stocks WHERE (author_id = ? AND ticker = ?)", (user_id, ticker))
-        print("test")
-        print(data_for_passing)
-    if user_id is None or not isinstance(data_for_passing, str):
+        image_data = db.execute("SELECT figure FROM stocks WHERE (author_id = ? AND ticker = ?)", (user_id, ticker))
+    if user_id is None or not isinstance(image_data, str):
         existed = False
         results = lstm.predict(ticker)
         #make the plots as subplots of a figure
@@ -34,16 +32,17 @@ def display(tckr):
         buf = BytesIO()
         fig.savefig(buf, format="png")
         # Embed the result in the html output.
-        data_for_passing = {
-            'data' : base64.b64encode(buf.getbuffer()).decode("ascii")
-        }
+        image_data = base64.b64encode(buf.getbuffer())
     if user_id is not None and existed == False:
+        print(image_data)
         db.execute(
             "INSERT INTO stocks (author_id, ticker, figure) VALUES (?, ?, ?)",
-            (user_id, ticker, data_for_passing),
+            (user_id, ticker, image_data),
         )
         db.commit()
-    
+    data_for_passing = {
+        'data' : image_data.decode("ascii")
+    }
     return render_template("predictionGraphs.html", **data_for_passing)
 
 @bp.route("/", methods=["GET", "POST"])
