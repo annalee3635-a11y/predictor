@@ -16,10 +16,15 @@ def display(tckr):
     #get the prediction
     db = get_db()
     user_id = session.get("user_id")
+    print(user_id)
     existed = True
+    image_data = None
     if user_id is not None:
-        image_data = db.execute("SELECT figure FROM stocks WHERE (author_id = ? AND ticker = ?)", (user_id, ticker))
-    if user_id is None or not isinstance(image_data, str):
+        image_data_cursor = db.execute("SELECT figure FROM stocks WHERE (author_id = ? AND ticker = ?)", (user_id, ticker))
+        image_data_row = image_data_cursor.fetchone()
+        if(image_data_row) is not None:
+            image_data = image_data_row[0]
+    if user_id is None or image_data is None:
         existed = False
         results = lstm.predict(ticker)
         #make the plots as subplots of a figure
@@ -34,7 +39,6 @@ def display(tckr):
         # Embed the result in the html output.
         image_data = base64.b64encode(buf.getbuffer())
     if user_id is not None and existed == False:
-        print(image_data)
         db.execute(
             "INSERT INTO stocks (author_id, ticker, figure) VALUES (?, ?, ?)",
             (user_id, ticker, image_data),
