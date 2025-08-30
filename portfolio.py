@@ -15,3 +15,4 @@ def display():
     user_id = session.get("user_id")
     portfolio_cursors = db.execute("SELECT figure FROM stocks WHERE (author_id = ?)", (user_id))
     print(portfolio_cursors)
+    return render_template("portfolio.html")
