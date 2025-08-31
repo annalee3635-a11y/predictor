@@ -10,13 +10,14 @@ from flask import g
 bp = Blueprint("portfolio", __name__, url_prefix="/portfolio")
 
 @bp.route("/", methods=["GET", "POST"])
-def display(): 
+def show(): 
     db = get_db()
     user_id = session.get("user_id")
-    portfolio_cursors = db.execute("SELECT figure FROM stocks WHERE (author_id = ?)", (user_id))
-    print(portfolio_cursors)
+    portfolio_table = db.execute("SELECT * FROM stocks WHERE author_id = ?", user_id)
+    print(portfolio_table)
     data_for_passing = []
-    for cursor in portfolio_cursors:
+    for table in portfolio_table:
+        cursor = table[4]
         image_data_row = cursor.fetchone()
         image_data = image_data_row[0]
         data = {

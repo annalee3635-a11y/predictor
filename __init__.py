@@ -34,10 +34,12 @@ def create_app(test_config=None):
 
     # apply the blueprints to the app
     from predicter import predictor
+    from predicter import portfolio
     from predicter import auth
 
     app.register_blueprint(predictor.bp)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(portfolio.bp)
 
     @app.route('/', methods=['GET'])
     def home():

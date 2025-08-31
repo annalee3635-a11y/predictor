@@ -16,7 +16,6 @@ def display(tckr):
     #get the prediction
     db = get_db()
     user_id = session.get("user_id")
-    print(user_id)
     existed = True
     image_data = None
     if user_id is not None:
