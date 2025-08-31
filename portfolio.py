@@ -15,4 +15,12 @@ def display():
     user_id = session.get("user_id")
     portfolio_cursors = db.execute("SELECT figure FROM stocks WHERE (author_id = ?)", (user_id))
     print(portfolio_cursors)
-    return render_template("portfolio.html")
+    data_for_passing = []
+    for cursor in portfolio_cursors:
+        image_data_row = cursor.fetchone()
+        image_data = image_data_row[0]
+        data = {
+        '   data' : image_data.decode("ascii")
+        }
+        data_for_passing.append(data)
+    return render_template("portfolio.html", **data_for_passing)

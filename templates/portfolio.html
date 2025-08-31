@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <img src='data:image/png;base64,{{data}}'/>
+    {% for data in images %}
+        <div><img src='data:image/png;base64,{{data}}'/></div>
+    {% endfor %}
 {% endblock %}
