@@ -13,15 +13,10 @@ bp = Blueprint("portfolio", __name__, url_prefix="/portfolio")
 def show(): 
     db = get_db()
     user_id = session.get("user_id")
-    portfolio_table = db.execute("SELECT * FROM stocks WHERE author_id = ?", user_id)
-    print(portfolio_table)
-    data_for_passing = []
-    for table in portfolio_table:
-        cursor = table[4]
-        image_data_row = cursor.fetchone()
-        image_data = image_data_row[0]
-        data = {
-        '   data' : image_data.decode("ascii")
-        }
-        data_for_passing.append(data)
-    return render_template("portfolio.html", **data_for_passing)
+    cursor = db.execute("SELECT figure FROM stocks WHERE (author_id = ?)", (user_id,))
+    image_data_row = cursor.fetchone()
+    image_data = image_data_row[0]
+    data = {
+    '   data' : image_data.decode("ascii")
+    }
+    return render_template("portfolio.html", **data)
