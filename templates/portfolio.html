@@ -2,6 +2,6 @@
 
 {% block content %}
     {%for i in range(0, len)%}
-        <ul><img src='data[i]:image/png;base64,{{data[i]}}'/></ul>
+        <img src='data:image/png;base64, {{data[i]}}'/>
     {% endfor %}
 {% endblock %}

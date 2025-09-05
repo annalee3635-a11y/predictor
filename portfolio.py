@@ -18,8 +18,7 @@ def show():
     for row in cursor.fetchall():
         image_data_row = row
         image_data = image_data_row[0]
-        data = {
-        '   data' : image_data.decode("ascii")
-        }
+        data = image_data.decode("ascii")
         data_for_passing.append(data)
+    print(data_for_passing)
     return render_template("portfolio.html", len = len(data_for_passing), data = data_for_passing)
