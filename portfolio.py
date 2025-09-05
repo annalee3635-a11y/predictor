@@ -14,9 +14,12 @@ def show():
     db = get_db()
     user_id = session.get("user_id")
     cursor = db.execute("SELECT figure FROM stocks WHERE (author_id = ?)", (user_id,))
-    image_data_row = cursor.fetchone()
-    image_data = image_data_row[0]
-    data = {
-    '   data' : image_data.decode("ascii")
-    }
-    return render_template("portfolio.html", **data)
+    data_for_passing = []
+    for row in cursor.fetchall():
+        image_data_row = row
+        image_data = image_data_row[0]
+        data = {
+        '   data' : image_data.decode("ascii")
+        }
+        data_for_passing.append(data)
+    return render_template("portfolio.html", len = len(data_for_passing), data = data_for_passing)
