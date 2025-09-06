@@ -1,11 +1,5 @@
-import base64
-from io import BytesIO
-from flask import Blueprint, redirect, render_template, request, session, url_for
-from markupsafe import escape
-from matplotlib.figure import Figure
-from predicter import lstm
+from flask import Blueprint, render_template, session
 from predicter.db import get_db
-from flask import g
 
 bp = Blueprint("portfolio", __name__, url_prefix="/portfolio")
 
