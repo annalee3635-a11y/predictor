@@ -74,6 +74,7 @@ def register():
                 error = f"User {username} is already registered."
             else:
                 # Success, go to the login page.
+                session.clear()
                 return redirect(url_for("auth.login"))
 
         flash(error)
