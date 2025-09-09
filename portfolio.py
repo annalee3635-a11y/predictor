@@ -7,6 +7,7 @@ bp = Blueprint("portfolio", __name__, url_prefix="/portfolio")
 def show(): 
     db = get_db()
     user_id = session.get("user_id")
+    #get all figures for the user
     cursor = db.execute("SELECT figure FROM stocks WHERE (author_id = ?)", (user_id,))
     data_for_passing = []
     for row in cursor.fetchall():
